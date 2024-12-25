@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* General Table Styles */
+.p-datatable {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Transparent Header */
+.p-datatable-thead {
+    background-color: transparent !important;
+    color: white !important;
+}
+
+/* Transparent Footer */
+.p-datatable>.p-datatable-footer {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Transparent Header Cells */
+.p-datatable-thead>tr>th {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* Transparent Footer Cells */
+.p-datatable-tfoot>tr>td {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* Transparent Rows and Hover Effects */
+.p-datatable-tbody>tr {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+.p-datatable-tbody>tr:hover {
+    background-color: #333333 !important;
+}
+
+/* Highlighted Row */
+.p-datatable-tbody>tr.p-highlight {
+    background-color: #520000 !important;
+    border-left: 4px solid #ca0000 !important;
+}
+
+/* Scrollbar Customization */
+.p-datatable-wrapper {
+    overflow: auto !important;
+    background-color: transparent !important;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.p-datatable-wrapper {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Transparent Header Toolbar */
+.p-datatable-header {
+    background-color: transparent !important;
+}
+
+/* Transparent Footer Toolbar */
+.p-datatable-footer {
+    background-color: transparent !important;
+}
+
+/* Hide DataTable Footer */
+.p-paginator-bottom.p-paginator {
+    display: none !important;
+}
+
+/* Highlighted Row */
+.p-datatable-tbody>tr.p-highlight {
+    background-color: #520000 !important;
+    border-left: 4px solid #ca0000 !important;
+}
+
+
+
+body {
+    font-family: "Poppins", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.hideScroll::-webkit-scrollbar {
+    display: none;
+}
+
+.loader {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+    margin: 15px auto;
+    position: relative;
+    color: #FFF;
+    box-sizing: border-box;
+    animation: animloader 2s linear infinite;
+}
+
+@keyframes animloader {
+    0% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 -2px, -14px 0 0 -2px, -38px 0 0 -2px;
+    }
+
+    25% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 -2px, -14px 0 0 -2px, -38px 0 0 2px;
+    }
+
+    50% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 -2px, -14px 0 0 2px, -38px 0 0 -2px;
+    }
+
+    75% {
+        box-shadow: 14px 0 0 2px, 38px 0 0 -2px, -14px 0 0 -2px, -38px 0 0 -2px;
+    }
+
+    100% {
+        box-shadow: 14px 0 0 -2px, 38px 0 0 2px, -14px 0 0 -2px, -38px 0 0 -2px;
+    }
+}
