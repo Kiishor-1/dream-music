@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
-// Utility to save state to local storage
+// Utility functions for localStorage
 const saveStateToLocalStorage = (state) => {
   try {
     localStorage.setItem("musicState", JSON.stringify(state));
@@ -10,7 +10,6 @@ const saveStateToLocalStorage = (state) => {
   }
 };
 
-// Utility to load state from local storage
 const loadStateFromLocalStorage = () => {
   try {
     const serializedState = localStorage.getItem("musicState");
@@ -29,9 +28,9 @@ export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunk
       {
         method: "GET",
         headers: {
-          "x-rapidapi-key": import.meta.env.VITE_REACT_APP_API_KEY,
-          "x-rapidapi-host": import.meta.env.VITE_REACT_APP_API_HOST,
-        },
+          'x-rapidapi-key': '15d881ce11mshd35be58db82b22fp11b723jsn3082c1f5ef44',
+          'x-rapidapi-host': 'spotify23.p.rapidapi.com'
+        }
       }
     );
 
@@ -49,7 +48,7 @@ export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunk
         album: trackData.albumOfTrack.name,
         duration: trackData.duration.totalMilliseconds,
         thumbnail: trackData.albumOfTrack.coverArt.sources[0]?.url || "",
-        uri: trackData.uri, // Spotify URI for SDK playback
+        uri: trackData.uri,
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Placeholder MP3
       };
     });
@@ -81,20 +80,17 @@ const musicSlice = createSlice({
       state.isPlaying = false;
     },
     playNext: (state) => {
-      const nextIndex =
-        state.currentTrackIndex + 1 < state.tracks.length
-          ? state.currentTrackIndex + 1
-          : 0;
+      const nextIndex = state.currentTrackIndex + 1 < state.tracks.length ? state.currentTrackIndex + 1 : 0;
       state.currentTrackIndex = nextIndex;
       state.isPlaying = true;
     },
     playPrevious: (state) => {
-      const prevIndex =
-        state.currentTrackIndex - 1 >= 0
-          ? state.currentTrackIndex - 1
-          : state.tracks.length - 1;
+      const prevIndex = state.currentTrackIndex - 1 >= 0 ? state.currentTrackIndex - 1 : state.tracks.length - 1;
       state.currentTrackIndex = prevIndex;
       state.isPlaying = true;
+    },
+    reorderTracks: (state, action) => {
+      state.tracks = action.payload;  // Update tracks order in Redux
     },
   },
   extraReducers: (builder) => {
@@ -121,9 +117,7 @@ const persistStateMiddleware = (store) => (next) => (action) => {
   return result;
 };
 
-export const { playTrack, pauseTrack, playNext, playPrevious } =
-  musicSlice.actions;
-
-export { persistStateMiddleware };
+export const { playTrack, pauseTrack, playNext, playPrevious, reorderTracks } = musicSlice.actions;
 
 export default musicSlice.reducer;
+export { persistStateMiddleware };

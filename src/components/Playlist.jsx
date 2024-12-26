@@ -1,7 +1,8 @@
-import { useDispatch } from "react-redux";
-import { playTrack } from "../slices/musicSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { playTrack, reorderTracks } from "../slices/musicSlice";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { FaSpinner } from "react-icons/fa";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
@@ -25,6 +26,12 @@ export default function Playlist({ tracks, loading, currentTrackIndex }) {
 
   const playTrackHandler = (track, index) => {
     dispatch(playTrack(index));
+  };
+
+  // Handle row reordering
+  const onRowReorder = (e) => {
+    const reorderedTracks = [...e.value];
+    dispatch(reorderTracks(reorderedTracks)); // Dispatch the updated order to Redux
   };
 
   return (
@@ -54,11 +61,13 @@ export default function Playlist({ tracks, loading, currentTrackIndex }) {
 
       <div className="track-list p- rounded-lg shadow-lg relative">
         <DataTable
-          value={tracks.map((track, index) => ({ ...track, index }))}
+          value={tracks}
           className="bg-transparent border-none shadow-none"
           paginator
           rows={tracks.length}
           scrollable
+          reorderableRows
+          onRowReorder={onRowReorder}
           rowClassName={(rowData) =>
             rowData.index === currentTrackIndex ? "p-highlight" : ""
           }
