@@ -15,6 +15,7 @@ export default function Home() {
   const [howlInstance, setHowlInstance] = useState(null);
   const [trackDuration, setTrackDuration] = useState(0);
 
+  // Always fetch tracks on page load
   useEffect(() => {
     dispatch(fetchTracks());
   }, [dispatch]);
@@ -65,7 +66,6 @@ export default function Home() {
     };
   }, [currentTrackIndex, isPlaying, tracks, dispatch]);
 
-
   return (
     <div className="flex-1 flex lg:flex-row flex-col items-center h-full hideScroll">
       <div className="self-start flex flex-col w-full h-full">
@@ -77,7 +77,7 @@ export default function Home() {
           currentTrack={tracks[currentTrackIndex]}
           isPlaying={isPlaying}
           howlInstance={howlInstance}
-          duration={trackDuration} 
+          duration={trackDuration}
         />
       </div>
     </div>

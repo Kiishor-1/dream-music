@@ -1,9 +1,7 @@
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { playTrack } from "../slices/musicSlice";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { useDispatch, useSelector } from "react-redux";
-import { playTrack } from "../slices/musicSlice";
-import { FaSpinner } from "react-icons/fa";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
@@ -16,15 +14,6 @@ function formatDuration(ms) {
 
 export default function Playlist({ tracks, loading, currentTrackIndex }) {
   const dispatch = useDispatch();
-  const { isPlaying } = useSelector((state) => state.music);
-
-  const [trackList, setTrackList] = useState(
-    tracks.map((track, index) => ({
-      ...track,
-      index,
-    }))
-  );
-  const [activeTrackIndex, setActiveTrackIndex] = useState(currentTrackIndex);
 
   if (loading) {
     return (
@@ -35,14 +24,7 @@ export default function Playlist({ tracks, loading, currentTrackIndex }) {
   }
 
   const playTrackHandler = (track, index) => {
-    setActiveTrackIndex(index);
     dispatch(playTrack(index));
-  };
-
-  // Handle row reordering
-  const onRowReorder = (e) => {
-    const reorderedTracks = [...e.value];
-    setTrackList(reorderedTracks);
   };
 
   return (
@@ -72,25 +54,21 @@ export default function Playlist({ tracks, loading, currentTrackIndex }) {
 
       <div className="track-list p- rounded-lg shadow-lg relative">
         <DataTable
-          value={trackList}
+          value={tracks.map((track, index) => ({ ...track, index }))}
           className="bg-transparent border-none shadow-none"
           paginator
-          rows={trackList.length}
+          rows={tracks.length}
           scrollable
-          reorderableRows
-          onRowReorder={onRowReorder}
           rowClassName={(rowData) =>
-            rowData.index === activeTrackIndex ? "p-highlight" : ""
+            rowData.index === currentTrackIndex ? "p-highlight" : ""
           }
         >
           <Column rowReorder style={{ width: "3rem" }} />
-
           <Column
             field="id"
             header="#"
             body={(rowData, { rowIndex }) => rowIndex + 1}
           />
-
           <Column
             header="Title"
             body={(rowData, { rowIndex }) => (
@@ -107,15 +85,12 @@ export default function Playlist({ tracks, loading, currentTrackIndex }) {
               </div>
             )}
           />
-
           <Column field="artist" header="Artist" body={(rowData) => rowData.artist || "Unknown Artist"} />
-
           <Column
             field="duration"
             header="Duration"
             body={(rowData) => formatDuration(rowData.duration)}
           />
-
           <Column field="album" header="Album" body={(rowData) => rowData.album || "Unknown Album"} />
         </DataTable>
       </div>

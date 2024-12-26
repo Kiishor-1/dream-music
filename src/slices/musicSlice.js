@@ -1,6 +1,27 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
+// Utility to save state to local storage
+const saveStateToLocalStorage = (state) => {
+  try {
+    localStorage.setItem("musicState", JSON.stringify(state));
+  } catch (e) {
+    console.error("Failed to save state to local storage:", e);
+  }
+};
+
+// Utility to load state from local storage
+const loadStateFromLocalStorage = () => {
+  try {
+    const serializedState = localStorage.getItem("musicState");
+    return serializedState ? JSON.parse(serializedState) : null;
+  } catch (e) {
+    console.error("Failed to load state from local storage:", e);
+    return null;
+  }
+};
+
+// Async thunk to fetch tracks
 export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunkAPI) => {
   try {
     const response = await fetch(
@@ -8,9 +29,9 @@ export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunk
       {
         method: "GET",
         headers: {
-          'x-rapidapi-key': import.meta.env.VITE_REACT_APP_API_KEY,
-          'x-rapidapi-host': import.meta.env.VITE_REACT_APP_API_HOST
-        }
+          "x-rapidapi-key": import.meta.env.VITE_REACT_APP_API_KEY,
+          "x-rapidapi-host": import.meta.env.VITE_REACT_APP_API_HOST,
+        },
       }
     );
 
@@ -19,7 +40,7 @@ export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunk
     }
 
     const data = await response.json();
-   
+
     const tracks = data.tracks.items.map((item) => {
       const trackData = item.data;
       return {
@@ -32,7 +53,7 @@ export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunk
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", // Placeholder MP3
       };
     });
-    console.log(data)
+
     return tracks;
   } catch (error) {
     toast.error(error.message || "An error occurred while fetching tracks.");
@@ -40,18 +61,17 @@ export const fetchTracks = createAsyncThunk("music/fetchTracks", async (_, thunk
   }
 });
 
-
-
+const initialState = loadStateFromLocalStorage() || {
+  tracks: [],
+  currentTrackIndex: null,
+  isPlaying: false,
+  loading: false,
+  error: null,
+};
 
 const musicSlice = createSlice({
   name: "music",
-  initialState: {
-    tracks: [],
-    currentTrackIndex: null,
-    isPlaying: false,
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
     playTrack: (state, action) => {
       state.currentTrackIndex = action.payload;
@@ -95,7 +115,15 @@ const musicSlice = createSlice({
   },
 });
 
+const persistStateMiddleware = (store) => (next) => (action) => {
+  const result = next(action);
+  saveStateToLocalStorage(store.getState().music);
+  return result;
+};
+
 export const { playTrack, pauseTrack, playNext, playPrevious } =
   musicSlice.actions;
+
+export { persistStateMiddleware };
 
 export default musicSlice.reducer;
